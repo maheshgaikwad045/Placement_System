@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - PlaceMe{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="card p-3 sidebar">
+        <h6 class="fw-bold text-muted small text-uppercase mb-3">Admin Panel</h6>
+        <a href="{% url 'admin_dashboard' %}" class="nav-link active"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+        <a href="{% url 'manage_jobs' %}" class="nav-link"><i class="fas fa-briefcase me-2"></i>Manage Jobs</a>
+        <a href="{% url 'manage_applications' %}" class="nav-link"><i class="fas fa-file-alt me-2"></i>Applications</a>
+        <a href="{% url 'manage_companies' %}" class="nav-link"><i class="fas fa-building me-2"></i>Companies</a>
+        <a href="{% url 'student_list' %}" class="nav-link"><i class="fas fa-users me-2"></i>Students</a>
+        <hr>
+        <a href="{% url 'home' %}" class="nav-link"><i class="fas fa-globe me-2"></i>View Site</a>
+      </div>
+    </div>
+    <div class="col-md-10">
+      <h4 class="fw-bold mb-4">Admin Dashboard</h4>
+      <div class="row g-3 mb-4">
+        <div class="col-md-3"><div class="stat-card" style="background:#4f46e5;"><div class="h2 fw-bold">{{ total_students }}</div><div>Students</div></div></div>
+        <div class="col-md-3"><div class="stat-card" style="background:#7c3aed;"><div class="h2 fw-bold">{{ total_applications }}</div><div>Applications</div></div></div>
+        <div class="col-md-3"><div class="stat-card" style="background:#059669;"><div class="h2 fw-bold">{{ total_companies }}</div><div>Companies</div></div></div>
+        <div class="col-md-3"><div class="stat-card" style="background:#d97706;"><div class="h2 fw-bold">{{ active_jobs }}</div><div>Active Jobs</div></div></div>
+      </div>
+      <!-- Status Overview -->
+      <div class="row g-3 mb-4">
+        {% for status, count in status_counts.items %}
+        <div class="col">
+          <div class="card p-3 text-center">
+            <div class="h4 fw-bold text-primary">{{ count }}</div>
+            <small class="text-muted text-capitalize">{{ status }}</small>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- Recent Applications -->
+      <div class="card p-3">
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="fw-bold mb-0">Recent Applications</h5>
+          <a href="{% url 'manage_applications' %}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle small">
+            <thead class="table-light"><tr><th>Student</th><th>Job</th><th>Company</th><th>Applied</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            {% for app in recent_apps %}
+            <tr>
+              <td>{{ app.applicant.get_full_name }}</td>
+              <td>{{ app.job.title }}</td>
+              <td>{{ app.job.company.name }}</td>
+              <td>{{ app.applied_at|date:"d M" }}</td>
+              <td><span class="badge status-{{ app.status }} rounded-pill px-2">{{ app.get_status_display }}</span></td>
+              <td><a href="{% url 'update_application_status' app.pk %}" class="btn btn-xs btn-outline-secondary btn-sm">Update</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}PlaceMe - Campus Placement Portal{% endblock %}</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root { --primary: #4f46e5; --secondary: #7c3aed; }
+body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
+.navbar { background: linear-gradient(135deg, #4f46e5, #7c3aed) !important; box-shadow: 0 2px 10px rgba(79,70,229,.3); }
+.navbar-brand { font-weight: 700; font-size: 1.4rem; color: #fff !important; }
+.nav-link { color: rgba(255,255,255,.9) !important; font-weight: 500; }
+.nav-link:hover { color: #fff !important; }
+.btn-primary { background: var(--primary); border-color: var(--primary); }
+.btn-primary:hover { background: #4338ca; border-color: #4338ca; }
+.card { border: none; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.badge-job { background: #ede9fe; color: #7c3aed; font-weight: 600; font-size: .75rem; padding: 4px 10px; border-radius: 20px; }
+.status-applied { background: #dbeafe; color: #1d4ed8; }
+.status-shortlisted { background: #fef3c7; color: #d97706; }
+.status-interview { background: #d1fae5; color: #059669; }
+.status-selected { background: #d1fae5; color: #065f46; }
+.status-rejected { background: #fee2e2; color: #dc2626; }
+.status-withdrawn { background: #f3f4f6; color: #6b7280; }
+.sidebar { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.sidebar .nav-link { color: #374151; padding: 10px 16px; border-radius: 8px; margin-bottom: 2px; }
+.sidebar .nav-link:hover, .sidebar .nav-link.active { background: #ede9fe; color: var(--primary); }
+.sidebar .nav-link i { width: 20px; }
+footer { background: #1e1b4b; color: rgba(255,255,255,.7); padding: 2rem 0; margin-top: 4rem; }
+.stat-card { border-radius: 12px; padding: 1.5rem; color: #fff; }
+.job-card:hover { transform: translateY(-2px); transition: .2s; box-shadow: 0 4px 12px rgba(0,0,0,.1) !important; }
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-graduation-cap me-2"></i>PlaceMe</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'job_list' %}"><i class="fas fa-briefcase me-1"></i>Jobs</a></li>
+        {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a></li>
+        {% if user.is_staff %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}"><i class="fas fa-cog me-1"></i>Admin Panel</a></li>
+        {% endif %}
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle me-1"></i>{{ user.get_full_name|default:user.username }}</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="fas fa-edit me-2"></i>Edit Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+        <li class="nav-item"><a class="btn btn-light btn-sm ms-2 fw-600" href="{% url 'register' %}">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+{% if messages %}
+<div class="container mt-3">
+{% for msg in messages %}
+<div class="alert alert-{{ msg.tags|default:'info' }} alert-dismissible fade show" role="alert">
+  {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div class="container text-center">
+    <p class="mb-1"><strong class="text-white">PlaceMe</strong> — Campus Placement Management System</p>
+    <p class="small mb-0">Built with Django &amp; Python | © 2024</p>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

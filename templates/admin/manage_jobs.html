@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Manage Jobs - Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">Manage Jobs</h4>
+    <a href="{% url 'add_job' %}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Post New Job</a>
+  </div>
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light"><tr><th>Job Title</th><th>Company</th><th>Type</th><th>Deadline</th><th>Status</th><th>Apps</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td><a href="{% url 'job_detail' job.pk %}" class="fw-500 text-decoration-none">{{ job.title }}</a></td>
+          <td>{{ job.company.name }}</td>
+          <td><span class="badge-job">{{ job.get_job_type_display }}</span></td>
+          <td><small>{{ job.deadline|date:"d M Y" }}</small></td>
+          <td><span class="badge {% if job.status == 'active' %}bg-success{% elif job.status == 'closed' %}bg-secondary{% else %}bg-warning text-dark{% endif %}">{{ job.get_status_display }}</span></td>
+          <td><a href="{% url 'manage_applications' %}?job={{ job.pk }}" class="badge bg-light text-dark text-decoration-none">{{ job.app_count }}</a></td>
+          <td>
+            <a href="{% url 'edit_job' job.pk %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+            <a href="{% url 'manage_applications' job.pk %}" class="btn btn-sm btn-outline-secondary">Apps</a>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

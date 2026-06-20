@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} - PlaceMe{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card p-4 mb-3">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h3 class="fw-bold mb-1">{{ job.title }}</h3>
+            <h5 class="text-muted">{{ job.company.name }}</h5>
+          </div>
+          <span class="badge-job">{{ job.get_job_type_display }}</span>
+        </div>
+        <div class="d-flex flex-wrap gap-3 text-muted small mb-4">
+          <span><i class="fas fa-map-marker-alt me-1 text-primary"></i>{{ job.location }}</span>
+          <span><i class="fas fa-clock me-1 text-primary"></i>{{ job.experience_years }}+ years exp</span>
+          {% if job.salary_min %}<span><i class="fas fa-rupee-sign me-1 text-primary"></i>{{ job.salary_min|floatformat:0 }}–{{ job.salary_max|floatformat:0 }} LPA</span>{% endif %}
+          <span><i class="fas fa-calendar me-1 text-primary"></i>Deadline: {{ job.deadline|date:"d M Y" }}</span>
+        </div>
+        <h6 class="fw-bold">Job Description</h6>
+        <p class="text-muted">{{ job.description }}</p>
+        <h6 class="fw-bold mt-3">Requirements</h6>
+        <p class="text-muted">{{ job.requirements }}</p>
+        <h6 class="fw-bold mt-3">Skills Required</h6>
+        <div>
+          {% for skill in job.get_skills_list %}
+          <span style="background:#ede9fe;color:#7c3aed;font-size:.8rem;padding:4px 12px;border-radius:20px;display:inline-block;margin:2px;">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <!-- Apply Card -->
+      <div class="card p-3 mb-3">
+        {% if has_applied %}
+        <div class="alert alert-success mb-3"><i class="fas fa-check-circle me-2"></i>You've already applied!</div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary w-100">View Application</a>
+        {% elif job.is_expired %}
+        <div class="alert alert-warning mb-0"><i class="fas fa-clock me-2"></i>Application deadline has passed.</div>
+        {% elif user.is_authenticated %}
+        <a href="{% url 'apply_job' job.pk %}" class="btn btn-primary w-100 py-2 mb-2">Apply Now</a>
+        <p class="text-muted small text-center mb-0">Application closes {{ job.deadline|date:"d M Y" }}</p>
+        {% else %}
+        <p class="text-muted small mb-3">Please log in to apply for this job.</p>
+        <a href="{% url 'login' %}?next={% url 'job_detail' job.pk %}" class="btn btn-primary w-100">Login to Apply</a>
+        {% endif %}
+      </div>
+      <!-- Company Card -->
+      <div class="card p-3 mb-3">
+        <h6 class="fw-bold">About {{ job.company.name }}</h6>
+        <p class="text-muted small">{{ job.company.description|default:"No description available." }}</p>
+        <small class="text-muted"><i class="fas fa-industry me-1"></i>{{ job.company.industry }}</small><br>
+        <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>{{ job.company.location }}</small>
+        {% if job.company.website %}
+        <div class="mt-2"><a href="{{ job.company.website }}" target="_blank" class="btn btn-sm btn-outline-primary w-100">Visit Website</a></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if related_jobs %}
+  <div class="mt-3">
+    <h5 class="fw-bold mb-3">More from {{ job.company.name }}</h5>
+    <div class="row g-2">
+      {% for rj in related_jobs %}
+      <div class="col-md-4">
+        <div class="card p-2">
+          <a href="{% url 'job_detail' rj.pk %}" class="text-decoration-none text-dark fw-500 small">{{ rj.title }}</a>
+          <small class="text-muted">{{ rj.location }}</small>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

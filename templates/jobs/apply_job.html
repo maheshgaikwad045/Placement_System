@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Apply - {{ job.title }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card p-4">
+        <div class="mb-4 p-3 rounded" style="background:#ede9fe;">
+          <h6 class="fw-bold mb-1">{{ job.title }}</h6>
+          <small class="text-muted">{{ job.company.name }} &bull; {{ job.location }}</small>
+        </div>
+        <h5 class="fw-bold mb-4">Submit Your Application</h5>
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label fw-500">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="text-danger small mt-1">{{ field.errors.0 }}</div>{% endif %}
+          </div>
+          {% endfor %}
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary px-4">Submit Application</button>
+            <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

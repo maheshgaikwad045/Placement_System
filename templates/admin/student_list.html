@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Students - Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h4 class="fw-bold mb-4">Registered Students ({{ profiles.count }})</h4>
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle small">
+        <thead class="table-light"><tr><th>Name</th><th>Email</th><th>College</th><th>Branch</th><th>CGPA</th><th>Grad Year</th><th>Applications</th></tr></thead>
+        <tbody>
+        {% for profile in profiles %}
+        <tr>
+          <td class="fw-500">{{ profile.user.get_full_name }}</td>
+          <td>{{ profile.user.email }}</td>
+          <td>{{ profile.college|default:"-" }}</td>
+          <td>{{ profile.branch|default:"-" }}</td>
+          <td>{{ profile.cgpa|default:"-" }}</td>
+          <td>{{ profile.graduation_year|default:"-" }}</td>
+          <td><span class="badge bg-light text-dark">{{ profile.app_count }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
