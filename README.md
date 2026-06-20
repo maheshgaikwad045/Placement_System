@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PlaceMe — Campus Placement Management System
 ### Built with Python 3.12 + Django 5.x
 
@@ -159,3 +160,6 @@ Open: http://127.0.0.1:8000
 *Built as a real-world placement project. Ready to extend with email notifications, PDF generation, and REST API.*
 
 c:/Users/Admin/OneDrive/Desktop/Django/placement_system/.venv/Scripts/python.exe manage.py runserver
+=======
+# Placement_System
+>>>>>>> 9232d7d3fe57d21c2c58f376857f8af376230135
