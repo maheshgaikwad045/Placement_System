@@ -1,9 +1,29 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-placement-system-secret-key-2024'
 DEBUG = True
 ALLOWED_HOSTS = ['*']
+
+
+def get_database_config(base_dir: Path) -> dict:
+    engine = os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3')
+
+    if engine == 'django.db.backends.sqlite3':
+        return {
+            'ENGINE': engine,
+            'NAME': str(base_dir / 'db.sqlite3'),
+        }
+
+    return {
+        'ENGINE': engine,
+        'NAME': os.environ.get('DB_NAME', 'placement_db'),
+        'USER': os.environ.get('DB_USER', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', ''),
+    }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,10 +67,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'placement_system.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': get_database_config(BASE_DIR),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
